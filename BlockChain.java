@@ -27,21 +27,16 @@ public class BlockChain {
 				this.height = 1;
 			}else{
 				this.height = previous_metablock.height + 1;
-				//And we need to a
 			}
 			
 		}
 	}
 	
 	
-
-    
-
     private HashMap<byte[], MetaBlock> blockChain; // This now becomes a list of Metablocks!
     private TransactionPool txPool = new TransactionPool();
     
-    //private TxHandler txHandler = new TxHandler(this.utxoPool); - old idea, see where to instatiate now
-    //private int currentHeight = 0; - this does not make sense any more
+    //private TxHandler txHandler = new TxHandler(this.utxoPool); - old idea, see where to instantiate now
     private Block maxHeightBlock;
     private MetaBlock maxHeightMetaBlock;
 
@@ -51,7 +46,7 @@ public class BlockChain {
      * block
      */
     public BlockChain(Block genesisBlock) {
-        // Create a new blockchain including the genesis block
+        // Create a new blockchain  of METABLOCKS! including the genesis block
     	this.blockChain = new HashMap<byte[], MetaBlock>();
     	
     	// Create a metablock for the genesis block and a new utxoPool
