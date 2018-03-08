@@ -27,6 +27,7 @@ public class BlockChain {
 				this.height = 1;
 			}else{
 				this.height = previous_metablock.height + 1;
+				//And we need to a
 			}
 			
 		}
@@ -57,7 +58,19 @@ public class BlockChain {
     	UTXOPool genesis_utxo_pool =  new UTXOPool();
     	MetaBlock genesis_metablock = new MetaBlock(genesisBlock, null, genesis_utxo_pool);
     	
+    	// Add it to the blockchain
     	this.blockChain.put(genesisBlock.getHash(), genesis_metablock);
+    	
+    	//Add coinbase
+    	 //addCoinbaseToUTXOPool(genesisBlock, utxoPool);
+    	 
+         Transaction coinbase = genesisBlock.getCoinbase();
+         for (int i = 0; i < coinbase.numOutputs(); i++) {
+             Transaction.Output out = coinbase.getOutput(i);
+             UTXO utxo = new UTXO(coinbase.getHash(), i);
+             genesis_utxo_pool.addUTXO(utxo, out);
+         }
+    	
     	this.maxHeightBlock = genesisBlock;
     	this.maxHeightMetaBlock = genesis_metablock;
     }
@@ -110,8 +123,9 @@ public class BlockChain {
 	    			}
     			}
 	    		
-	    		//Checking the height
-	    		if (previous_metablock.height >= this.maxHeightMetaBlock.height){
+	    		
+	    		//Checking the height. We need to consider the CUT_OFF_AGE
+	    		if (previous_metablock.height + 1 <= this.maxHeightMetaBlock.height - CUT_OFF_AGE){
 	    			return false;
 	    		}
 	    		
