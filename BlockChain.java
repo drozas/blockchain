@@ -1,3 +1,5 @@
+import java.util.HashMap;
+
 // Block Chain should maintain only limited block nodes to satisfy the functions
 // You should not have all the blocks added to the block chain in memory 
 // as it would cause a memory overflow.
@@ -6,6 +8,12 @@
 
 public class BlockChain {
     public static final int CUT_OFF_AGE = 10;
+    
+
+    private HashMap<byte[], Block> blockChain;
+    private TransactionPool txPool = new TransactionPool();
+    private int currentHeight = 0;
+
 
     /**
      * create an empty block chain with just a genesis block. Assume {@code genesisBlock} is a valid
@@ -13,21 +21,25 @@ public class BlockChain {
      */
     public BlockChain(Block genesisBlock) {
         // IMPLEMENT THIS
+    	this.blockChain.put(genesisBlock.getHash(), genesisBlock);
+    	this.currentHeight++;
     }
 
     /** Get the maximum height block */
     public Block getMaxHeightBlock() {
         // IMPLEMENT THIS
+    	return null;
     }
 
     /** Get the UTXOPool for mining a new block on top of max height block */
     public UTXOPool getMaxHeightUTXOPool() {
         // IMPLEMENT THIS
+    	return null;
     }
 
     /** Get the transaction pool to mine a new block */
     public TransactionPool getTransactionPool() {
-        // IMPLEMENT THIS
+        return this.txPool;
     }
 
     /**
@@ -44,10 +56,11 @@ public class BlockChain {
      */
     public boolean addBlock(Block block) {
         // IMPLEMENT THIS
+    	return false;
     }
 
     /** Add a transaction to the transaction pool */
     public void addTransaction(Transaction tx) {
-        // IMPLEMENT THIS
+        this.txPool.addTransaction(tx);
     }
 }
