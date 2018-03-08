@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.logging.Handler;
 
 // Block Chain should maintain only limited block nodes to satisfy the functions
 // You should not have all the blocks added to the block chain in memory 
@@ -41,6 +42,7 @@ public class BlockChain {
     //private TxHandler txHandler = new TxHandler(this.utxoPool); - old idea, see where to instatiate now
     //private int currentHeight = 0; - this does not make sense any more
     private Block maxHeightBlock;
+    private MetaBlock maxHeightMetaBlock;
 
 
     /**
@@ -57,18 +59,17 @@ public class BlockChain {
     	
     	this.blockChain.put(genesisBlock.getHash(), genesis_metablock);
     	this.maxHeightBlock = genesisBlock;
+    	this.maxHeightMetaBlock = genesis_metablock;
     }
 
     /** Get the maximum height block */
     public Block getMaxHeightBlock() {
-        // IMPLEMENT THIS
     	return this.maxHeightBlock;
     }
 
     /** Get the UTXOPool for mining a new block on top of max height block */
     public UTXOPool getMaxHeightUTXOPool() {
-        // IMPLEMENT THIS
-    	return this.utxoPool;
+    	return this.maxHeightMetaBlock.utxoPool;
     }
 
     /** Get the transaction pool to mine a new block */
@@ -94,14 +95,17 @@ public class BlockChain {
     		return false;
     	}else{
     		// Check parent block
-    		Block previous_block = this.blockChain.get(block.getPrevBlockHash());
-    		if (previous_block == null){
+    		MetaBlock previous_metablock = this.blockChain.get(block.getPrevBlockHash());
+    		if (previous_metablock.previous_metablock == null){
     			return false;
     		}else{
     			
+    			// We now need to instatiate a handler
+    			TxHandler txHandler = new TxHandler(previous_metablock.utxoPool);
+    			
 	    		// Check all of the transactions are valid
 	    		for (Transaction tx : block.getTransactions()) {
-	    			if (!this.txHandler.isValidTx(tx)) {
+	    			if (!txHandler.isValidTx(tx)) {
 	    				return false;
 	    			}
     			}
@@ -109,11 +113,14 @@ public class BlockChain {
 	    		//How can I access the height? I was expecting...
 	    		//previous_block.getHeight()
 	    		
-	    		// Add the block
-	    		this.blockChain.put(block.getHash(), block);
-	    		this.currentHeight++;
-	    		// This now becomes the maxheightblock
-	    		this.maxHeightBlock = block;    		
+	    		// Add the metablock... this is why we needed to add the extra method
+	    		MetaBlock new_metablock =  new MetaBlock(block, previous_metablock, txHandler.getUTXOPool());
+	    		
+	    		this.blockChain.put(block.getHash(), new_metablock);
+	    		//this.currentHeight++;
+	    		// This now becomes the maxheightblock + metablock
+	    		this.maxHeightBlock = block;
+	    		this.maxHeightMetaBlock = new_metablock;
 	    		return true;
     		}
     	}

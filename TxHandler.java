@@ -15,6 +15,10 @@ public class TxHandler {
     	my_pool = new UTXOPool(utxoPool);
     	
     }
+    
+    public UTXOPool getUTXOPool(){
+    	return my_pool;
+    }
 
     /**
      * @return true if:
