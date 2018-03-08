@@ -15,6 +15,7 @@ public class BlockChain {
     private UTXOPool utxoPool = new UTXOPool();
     private TxHandler txHandler = new TxHandler(this.utxoPool);
     private int currentHeight = 0;
+    private Block maxHeightBlock;
 
 
     /**
@@ -23,6 +24,7 @@ public class BlockChain {
      */
     public BlockChain(Block genesisBlock) {
         // IMPLEMENT THIS
+    	this.blockChain = new HashMap<byte[], Block>();
     	this.blockChain.put(genesisBlock.getHash(), genesisBlock);
     	this.currentHeight++;
     }
@@ -30,13 +32,13 @@ public class BlockChain {
     /** Get the maximum height block */
     public Block getMaxHeightBlock() {
         // IMPLEMENT THIS
-    	return null;
+    	return this.maxHeightBlock;
     }
 
     /** Get the UTXOPool for mining a new block on top of max height block */
     public UTXOPool getMaxHeightUTXOPool() {
         // IMPLEMENT THIS
-    	return null;
+    	return this.utxoPool;
     }
 
     /** Get the transaction pool to mine a new block */
@@ -69,9 +71,8 @@ public class BlockChain {
     			}
 			}
     		
-    		// Check if transactions are valid
-    		
-    		
+    		// This now becomes the maxheightblock
+    		this.maxHeightBlock = block;    		
     		return true;
     	}
     }
