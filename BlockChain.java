@@ -23,9 +23,10 @@ public class BlockChain {
      * block
      */
     public BlockChain(Block genesisBlock) {
-        // IMPLEMENT THIS
+        // Create a new blockchain including the genesis block
     	this.blockChain = new HashMap<byte[], Block>();
     	this.blockChain.put(genesisBlock.getHash(), genesisBlock);
+    	this.maxHeightBlock = genesisBlock;
     	this.currentHeight++;
     }
 
