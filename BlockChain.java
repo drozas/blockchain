@@ -69,13 +69,16 @@ public class BlockChain {
     		if (previous_block == null){
     			return false;
     		}else{
-    		
+    			
 	    		// Check all of the transactions are valid
 	    		for (Transaction tx : block.getTransactions()) {
 	    			if (!this.txHandler.isValidTx(tx)) {
 	    				return false;
 	    			}
-				}
+    			}
+	    		
+	    		//How can I access the height? I was expecting...
+	    		//previous_block.getHeight()
 	    		
 	    		// Add the block
 	    		this.blockChain.put(block.getHash(), block);
