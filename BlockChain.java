@@ -96,7 +96,7 @@ public class BlockChain {
     	}else{
     		// Check parent block
     		MetaBlock previous_metablock = this.blockChain.get(block.getPrevBlockHash());
-    		if (previous_metablock.previous_metablock == null){
+    		if (previous_metablock == null){
     			return false;
     		}else{
     			
@@ -110,8 +110,10 @@ public class BlockChain {
 	    			}
     			}
 	    		
-	    		//How can I access the height? I was expecting...
-	    		//previous_block.getHeight()
+	    		//Checking the height
+	    		if (previous_metablock.height >= this.maxHeightMetaBlock.height){
+	    			return false;
+	    		}
 	    		
 	    		// Add the metablock... this is why we needed to add the extra method
 	    		MetaBlock new_metablock =  new MetaBlock(block, previous_metablock, txHandler.getUTXOPool());
