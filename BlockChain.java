@@ -64,20 +64,26 @@ public class BlockChain {
     	if (block.getPrevBlockHash() == null) {
     		return false;
     	}else{
+    		// Check parent block
+    		Block previous_block = this.blockChain.get(block.getPrevBlockHash());
+    		if (previous_block == null){
+    			return false;
+    		}else{
     		
-    		// Check all of the transactions are valid
-    		for (Transaction tx : block.getTransactions()) {
-    			if (!this.txHandler.isValidTx(tx)) {
-    				return false;
-    			}
-			}
-    		
-    		// Add the block
-    		this.blockChain.put(block.getHash(), block);
-    		
-    		// This now becomes the maxheightblock
-    		this.maxHeightBlock = block;    		
-    		return true;
+	    		// Check all of the transactions are valid
+	    		for (Transaction tx : block.getTransactions()) {
+	    			if (!this.txHandler.isValidTx(tx)) {
+	    				return false;
+	    			}
+				}
+	    		
+	    		// Add the block
+	    		this.blockChain.put(block.getHash(), block);
+	    		this.currentHeight++;
+	    		// This now becomes the maxheightblock
+	    		this.maxHeightBlock = block;    		
+	    		return true;
+    		}
     	}
     }
 
