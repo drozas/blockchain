@@ -61,9 +61,7 @@ public class BlockChain {
     	// Add it to the blockchain
     	this.blockChain.put(genesisBlock.getHash(), genesis_metablock);
     	
-    	//Add coinbase
-    	 //addCoinbaseToUTXOPool(genesisBlock, utxoPool);
-    	 
+    	//Add coinbase for genesis
          Transaction coinbase = genesisBlock.getCoinbase();
          for (int i = 0; i < coinbase.numOutputs(); i++) {
              Transaction.Output out = coinbase.getOutput(i);
@@ -129,11 +127,19 @@ public class BlockChain {
 	    			return false;
 	    		}
 	    		
-	    		// Add the metablock... this is why we needed to add the extra method
+	    		// Add the metablock instead... this is why we needed to add the extra method
 	    		MetaBlock new_metablock =  new MetaBlock(block, previous_metablock, txHandler.getUTXOPool());
 	    		
 	    		this.blockChain.put(block.getHash(), new_metablock);
-	    		//this.currentHeight++;
+	    		
+	        	//Add coinbase for block
+	            Transaction coinbase = block.getCoinbase();
+	            for (int i = 0; i < coinbase.numOutputs(); i++) {
+	                Transaction.Output out = coinbase.getOutput(i);
+	                UTXO utxo = new UTXO(coinbase.getHash(), i);
+	                txHandler.getUTXOPool().addUTXO(utxo, out);
+	            }
+
 	    		// This now becomes the maxheightblock + metablock
 	    		this.maxHeightBlock = block;
 	    		this.maxHeightMetaBlock = new_metablock;
