@@ -8,13 +8,38 @@ import java.util.HashMap;
 
 public class BlockChain {
     public static final int CUT_OFF_AGE = 10;
+	
+	// Internal class to add extra data regarding height - this is basically and ID!
+	class MetaBlock{
+		public Block block;
+		public MetaBlock previous_metablock;
+		public int height;
+		// In this version, we put the pool here!
+		public UTXOPool utxoPool;
+		
+		public MetaBlock(Block block, MetaBlock previous_metablock, UTXOPool utxoPool){
+			this.block = block;
+			this.previous_metablock = previous_metablock;
+			this.utxoPool = utxoPool;
+			//The height will be 1 for the genesis block, or the height of the previous one + 1 otherwise
+			if (previous_metablock==null){
+				this.height = 1;
+			}else{
+				this.height = previous_metablock.height + 1;
+			}
+			
+		}
+	}
+	
+	
+
     
 
-    private HashMap<byte[], Block> blockChain;
+    private HashMap<byte[], MetaBlock> blockChain; // This now becomes a list of Metablocks!
     private TransactionPool txPool = new TransactionPool();
-    private UTXOPool utxoPool = new UTXOPool();
-    private TxHandler txHandler = new TxHandler(this.utxoPool);
-    private int currentHeight = 0;
+    
+    //private TxHandler txHandler = new TxHandler(this.utxoPool); - old idea, see where to instatiate now
+    //private int currentHeight = 0; - this does not make sense any more
     private Block maxHeightBlock;
 
 
@@ -24,10 +49,14 @@ public class BlockChain {
      */
     public BlockChain(Block genesisBlock) {
         // Create a new blockchain including the genesis block
-    	this.blockChain = new HashMap<byte[], Block>();
-    	this.blockChain.put(genesisBlock.getHash(), genesisBlock);
+    	this.blockChain = new HashMap<byte[], MetaBlock>();
+    	
+    	// Create a metablock for the genesis block and a new utxoPool
+    	UTXOPool genesis_utxo_pool =  new UTXOPool();
+    	MetaBlock genesis_metablock = new MetaBlock(genesisBlock, null, genesis_utxo_pool);
+    	
+    	this.blockChain.put(genesisBlock.getHash(), genesis_metablock);
     	this.maxHeightBlock = genesisBlock;
-    	this.currentHeight++;
     }
 
     /** Get the maximum height block */
