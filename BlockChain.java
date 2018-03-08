@@ -12,6 +12,8 @@ public class BlockChain {
 
     private HashMap<byte[], Block> blockChain;
     private TransactionPool txPool = new TransactionPool();
+    private UTXOPool utxoPool = new UTXOPool();
+    private TxHandler txHandler = new TxHandler(this.utxoPool);
     private int currentHeight = 0;
 
 
@@ -55,8 +57,23 @@ public class BlockChain {
      * @return true if block is successfully added
      */
     public boolean addBlock(Block block) {
-        // IMPLEMENT THIS
-    	return false;
+    	// One of the conditions: If you receive a block which claims to be a genesis block (parent is a null hash) in the addBlock(Block b) function, you can return false.
+    	if (block.getPrevBlockHash() == null) {
+    		return false;
+    	}else{
+    		
+    		// Check all of the transactions are valid
+    		for (Transaction tx : block.getTransactions()) {
+    			if (!this.txHandler.isValidTx(tx)) {
+    				return false;
+    			}
+			}
+    		
+    		// Check if transactions are valid
+    		
+    		
+    		return true;
+    	}
     }
 
     /** Add a transaction to the transaction pool */
