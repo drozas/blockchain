@@ -72,6 +72,9 @@ public class BlockChain {
     			}
 			}
     		
+    		// Add the block
+    		this.blockChain.put(block.getHash(), block);
+    		
     		// This now becomes the maxheightblock
     		this.maxHeightBlock = block;    		
     		return true;
